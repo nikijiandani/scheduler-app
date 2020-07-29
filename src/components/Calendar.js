@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { hours } from '../hours';
 
-const Calendar = ({ days }) => {
+const Calendar = ({ days, tasks }) => {
+	console.log(tasks);
+
 	return (
 		<Container>
 			<Header>
@@ -29,6 +31,17 @@ const Calendar = ({ days }) => {
 					</Row>
 				))}
 			</Content>
+			{/* {tasks.map((task) => (
+				<svg
+					viewBox='0 0 220 100'
+					xmlns='http://www.w3.org/2000/svg'
+					key={task.id}
+				>
+					<rect x='120' width='100' height='100' rx='15'>
+						<text>{task.description}</text>
+					</rect>
+				</svg>
+			))} */}
 		</Container>
 	);
 };

@@ -4,24 +4,44 @@ import styled from 'styled-components';
 import ArrowLeft from './assets/keyboard_arrow_left-24px.svg';
 import ArrowRight from './assets/keyboard_arrow_right-24px.svg';
 import { drivers } from './drivers';
-import { Calendar } from './components';
+import { taskData } from './task-data';
+import { Calendar, Modal } from './components';
 import { generateWeek } from './utils';
 import './App.css';
+import { Icon } from './styles';
 
 function App() {
 	const [currentWeek, setCurrentWeek] = useState(moment(Date.now()).week());
 	const [days, setDays] = useState([]);
+	const [selectedDriver, setSelectedDriver] = useState(drivers[0].id);
+	const [tasks, setTasks] = useState(taskData);
+	const [selectedDriverTasks, setSelectedDriverTasks] = useState(
+		taskData.filter((t) => t.driver_id === selectedDriver)
+	);
+	const [showNewTaskModal, setShowNewTaskModal] = useState(false);
 
 	useEffect(() => {
 		setDays(generateWeek(currentWeek));
-	}, [currentWeek]);
+		setSelectedDriverTasks(tasks.filter((t) => t.driver_id === selectedDriver));
+	}, [currentWeek, selectedDriver, tasks]);
+
+	const handleTaskSubmit = (e, task) => {
+		e.preventDefault();
+		task.id = tasks.length + 1;
+		setTasks([...tasks, task]);
+	};
 
 	return (
 		<div className='App'>
 			<Header>
 				<div>
 					<label htmlFor='driver-select'>Driver:</label>
-					<select name='drivers' id='driver-select'>
+					<select
+						name='drivers'
+						id='driver-select'
+						onChange={(e) => setSelectedDriver(parseInt(e.target.value, 10))}
+						value={selectedDriver.id}
+					>
 						{drivers.map((driver) => (
 							<option value={driver.id} key={driver.id}>
 								{`${driver.first_name} ${driver.last_name}`}
@@ -57,6 +77,16 @@ function App() {
 				<Today onClick={() => setCurrentWeek(moment(Date.now()).week())}>
 					Today
 				</Today>
+				<NewTaskButton onClick={() => setShowNewTaskModal(true)}>
+					Add New Task
+				</NewTaskButton>
+				{showNewTaskModal && (
+					<Modal
+						selectedDriver={selectedDriver}
+						closeModal={() => setShowNewTaskModal(false)}
+						handleSubmit={handleTaskSubmit}
+					/>
+				)}
 				<div>
 					Download schedule
 					<select name='day intervals' id='day-interval-select'>
@@ -69,7 +99,7 @@ function App() {
 				</div>
 			</Header>
 			<Main>
-				<Calendar days={days} />
+				<Calendar days={days} tasks={selectedDriverTasks} />
 			</Main>
 		</div>
 	);
@@ -95,16 +125,11 @@ const WeekWrapper = styled.div`
 	min-width: 8rem;
 `;
 
-const Icon = styled.img`
+const Today = styled.button`
 	cursor: pointer;
-
-	:hover {
-		background: #e5e5e5;
-		border-radius: 50%;
-	}
 `;
 
-const Today = styled.button`
+const NewTaskButton = styled.button`
 	cursor: pointer;
 `;
 
