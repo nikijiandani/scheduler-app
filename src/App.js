@@ -9,6 +9,7 @@ import { Calendar, Modal } from './components';
 import { generateWeek } from './utils';
 import './App.css';
 import { Icon } from './styles';
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
 	const [currentWeek, setCurrentWeek] = useState(moment(Date.now()).week());
@@ -25,10 +26,19 @@ function App() {
 		setSelectedDriverTasks(tasks.filter((t) => t.driver_id === selectedDriver));
 	}, [currentWeek, selectedDriver, tasks]);
 
-	const handleTaskSubmit = (e, task) => {
-		e.preventDefault();
-		task.id = tasks.length + 1;
+	const handleTaskSubmit = (task) => {
+		task.id = uuidv4();
 		setTasks([...tasks, task]);
+	};
+
+	const handleOverwrite = (conflictedTasks, newTask) => {
+		const conflictedTaskIds = conflictedTasks.map((t) => t.id);
+		const tasksWithNoConflicts = tasks.filter(
+			(t) => !conflictedTaskIds.includes(t.id)
+		);
+		newTask.id = uuidv4();
+		setTasks([...tasksWithNoConflicts, newTask]);
+		setShowNewTaskModal(false);
 	};
 
 	return (
@@ -84,7 +94,9 @@ function App() {
 					<Modal
 						selectedDriver={selectedDriver}
 						closeModal={() => setShowNewTaskModal(false)}
-						handleSubmit={handleTaskSubmit}
+						saveTask={handleTaskSubmit}
+						tasks={selectedDriverTasks}
+						handleOverwrite={handleOverwrite}
 					/>
 				)}
 				<div>
