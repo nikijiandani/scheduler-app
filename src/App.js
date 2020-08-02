@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
 import styled from 'styled-components';
-import ArrowLeft from './assets/keyboard_arrow_left-24px.svg';
-import ArrowRight from './assets/keyboard_arrow_right-24px.svg';
 import { drivers } from './drivers';
 import { taskData } from './task-data';
-import { Calendar, Modal } from './components';
+import { Calendar, Header } from './components';
 import { generateWeek } from './utils';
 import './App.css';
-import { Icon } from './styles';
 import { v4 as uuidv4 } from 'uuid';
 
 // Extend moment using the moment-range plugin
@@ -62,75 +59,19 @@ function App() {
 
 	return (
 		<div className='App'>
-			<Header>
-				<div>
-					<label htmlFor='driver-select'>Driver:</label>
-					<select
-						name='drivers'
-						id='driver-select'
-						onChange={(e) => setSelectedDriver(parseInt(e.target.value, 10))}
-						value={selectedDriver.id}
-					>
-						{drivers.map((driver) => (
-							<option value={driver.id} key={driver.id}>
-								{`${driver.first_name} ${driver.last_name}`}
-							</option>
-						))}
-					</select>
-				</div>
-				<WeekWrapper>
-					<Icon
-						src={ArrowLeft}
-						alt='previous week'
-						onClick={() =>
-							setSelectedWeek(
-								moment(Date.now())
-									.week(selectedWeek - 1)
-									.week()
-							)
-						}
-					/>
-					{`Week ${selectedWeek}`}
-					<Icon
-						src={ArrowRight}
-						alt='next week'
-						onClick={() =>
-							setSelectedWeek(
-								moment(Date.now())
-									.week(selectedWeek + 1)
-									.week()
-							)
-						}
-					/>
-				</WeekWrapper>
-				<Today onClick={() => setSelectedWeek(moment(Date.now()).week())}>
-					Today
-				</Today>
-				<NewTaskButton onClick={() => setShowTaskModal(true)}>
-					Add New Task
-				</NewTaskButton>
-				{showTaskModal && (
-					<Modal
-						selectedDriver={selectedDriver}
-						closeModal={() => setShowTaskModal(false)}
-						saveTask={handleTaskSubmit}
-						tasks={selectedDriverTasks}
-						handleOverwrite={handleOverwrite}
-						selectedTask={selectedTask}
-						setSelectedTask={setSelectedTask}
-					/>
-				)}
-				<div>
-					Download schedule
-					<select name='day intervals' id='day-interval-select'>
-						<option value='2'>2 days</option>
-						<option value='4'>4 days</option>
-						<option value='7'>7 days</option>
-						<option value='14'>14 days</option>
-						<option value='28'>28 days</option>
-					</select>
-				</div>
-			</Header>
+			<Header
+				selectedDriver={selectedDriver}
+				setSelectedDriver={setSelectedDriver}
+				selectedWeek={selectedWeek}
+				setSelectedWeek={setSelectedWeek}
+				selectedTask={selectedTask}
+				setSelectedTask={setSelectedTask}
+				showTaskModal={showTaskModal}
+				setShowTaskModal={setShowTaskModal}
+				selectedDriverTasks={selectedDriverTasks}
+				handleTaskSubmit={handleTaskSubmit}
+				handleOverwrite={handleOverwrite}
+			/>
 			<Main>
 				<Calendar
 					days={days}
@@ -143,32 +84,10 @@ function App() {
 	);
 }
 
-const Header = styled.header`
-	display: flex;
-	justify-content: space-between;
-	padding: 1rem;
-	height: 20%;
-`;
-
 const Main = styled.main`
 	height: calc(100vh - 4rem);
 	position: relative;
 	overflow: auto;
-`;
-
-const WeekWrapper = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	min-width: 8rem;
-`;
-
-const Today = styled.button`
-	cursor: pointer;
-`;
-
-const NewTaskButton = styled.button`
-	cursor: pointer;
 `;
 
 export default App;
