@@ -93,7 +93,6 @@ const Modal = ({
 				<Form onSubmit={(e) => handleSubmit(e)}>
 					{selectedTask ? (
 						<>
-							{console.log(selectedTask)}
 							<TaskFormContent
 								driver={driver}
 								date={new Date(selectedTask.start_time)}
@@ -155,16 +154,23 @@ const Modal = ({
 							</div>
 							<button
 								type='button'
-								onClick={() =>
+								onClick={() => {
+									const start = moment(
+										moment(date).format('YYYY-MM-DD') + ' ' + startTime
+									);
+									const end = moment(
+										moment(date).format('YYYY-MM-DD') + ' ' + endTime
+									);
+
 									handleOverwrite(conflictedTasks, {
 										type: taskType,
 										description: description,
 										location: location,
 										driver_id: selectedDriver,
-										start_time: startTime,
-										end_time: endTime,
-									})
-								}
+										start_time: start,
+										end_time: end,
+									});
+								}}
 							>
 								Save & Overwrite
 							</button>
