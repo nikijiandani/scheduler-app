@@ -42,8 +42,15 @@ function App() {
 	}, [selectedWeek, selectedDriver, tasks]);
 
 	const handleTaskSubmit = (task) => {
-		task.id = uuidv4();
-		setTasks([...tasks, task]);
+		// if editing existing task, update existing task
+		if (selectedTask) {
+			task.id = selectedTask.id;
+			setTasks([...tasks.filter((t) => t.id !== selectedTask.id), task]);
+			setSelectedTask(null);
+		} else {
+			task.id = uuidv4();
+			setTasks([...tasks, task]);
+		}
 	};
 
 	const handleOverwrite = (conflictedTasks, newTask) => {

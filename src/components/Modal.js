@@ -21,29 +21,40 @@ const Modal = ({
 	selectedTask,
 	setSelectedTask,
 }) => {
-	const [date, setDate] = useState(Date.now());
-	const [startTime, setStartTime] = useState('00:00');
-	const [endTime, setEndTime] = useState('01:00');
+	const [date, setDate] = useState(
+		selectedTask ? new Date(selectedTask.start_time) : Date.now()
+	);
+	const [startTime, setStartTime] = useState(
+		selectedTask
+			? convertDateToHoursAndMinutes(selectedTask.start_time)
+			: '00:00'
+	);
+	const [endTime, setEndTime] = useState(
+		selectedTask ? convertDateToHoursAndMinutes(selectedTask.end_time) : '01:00'
+	);
 	const [duration, setDuration] = useState(
 		moment(selectedTask ? selectedTask.end_time : endTime, 'HH:mm:ss').diff(
 			moment(selectedTask ? selectedTask.start_time : startTime, 'HH:mm:ss'),
 			'minutes'
 		)
 	);
-	const [taskType, setTaskType] = useState('PICK-UP');
-	const [description, setDescription] = useState('');
-	const [location, setLocation] = useState('');
+	const [taskType, setTaskType] = useState(
+		selectedTask ? selectedTask.type : 'PICK-UP'
+	);
+	const [description, setDescription] = useState(
+		selectedTask ? selectedTask.description : ''
+	);
+	const [location, setLocation] = useState(
+		selectedTask ? selectedTask.location : ''
+	);
 	const [conflictedTasks, setConflictedTasks] = useState([]);
 	const driver = drivers.find((driver) => driver.id === selectedDriver);
 
 	useEffect(() => {
 		setDuration(
-			moment(selectedTask ? selectedTask.end_time : endTime, 'HH:mm:ss').diff(
-				moment(selectedTask ? selectedTask.start_time : startTime, 'HH:mm:ss'),
-				'minutes'
-			)
+			moment(endTime, 'HH:mm:ss').diff(moment(startTime, 'HH:mm:ss'), 'minutes')
 		);
-	}, [startTime, endTime, selectedTask]);
+	}, [startTime, endTime]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -55,9 +66,14 @@ const Modal = ({
 		const range = momentPlus.range(start, end);
 
 		// check if task conflicts with existing tasks
-		const conflicts = tasks.filter(
+		let conflicts = tasks.filter(
 			(t) => range.contains(t.start_time) || range.contains(t.end_time)
 		);
+
+		// if editing a task, filter out the task being edited to avoid conflicts
+		if (selectedTask) {
+			conflicts = conflicts.filter((t) => t.id !== selectedTask.id);
+		}
 
 		if (conflicts.length === 0) {
 			saveTask({
@@ -91,31 +107,7 @@ const Modal = ({
 					/>
 				</Header>
 				<Form onSubmit={(e) => handleSubmit(e)}>
-					{selectedTask ? (
-						<>
-							<TaskFormContent
-								driver={driver}
-								date={new Date(selectedTask.start_time)}
-								setDate={setDate}
-								startTime={convertDateToHoursAndMinutes(
-									selectedTask.start_time
-								)}
-								setStartTime={setStartTime}
-								endTime={convertDateToHoursAndMinutes(selectedTask.end_time)}
-								setEndTime={setEndTime}
-								duration={moment(selectedTask.end_time, 'HH:mm:ss').diff(
-									moment(selectedTask.start_time, 'HH:mm:ss'),
-									'minutes'
-								)}
-								taskType={selectedTask.taskType}
-								setTaskType={setTaskType}
-								description={selectedTask.description}
-								setDescription={setDescription}
-								location={selectedTask.location}
-								setLocation={setLocation}
-							/>
-						</>
-					) : conflictedTasks.length === 0 ? (
+					{conflictedTasks.length === 0 ? (
 						<TaskFormContent
 							driver={driver}
 							date={date}
