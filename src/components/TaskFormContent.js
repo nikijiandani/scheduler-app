@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { convertDateToHoursAndMinutes } from '../utils';
 
 const TaskFormContent = ({
 	driver,
@@ -49,7 +50,12 @@ const TaskFormContent = ({
 						type='time'
 						value={endTime}
 						onChange={(e) => setEndTime(e.target.value)}
-						min={startTime}
+						min={convertDateToHoursAndMinutes(
+							moment(moment(date).format('YYYY-MM-DD') + ' ' + startTime).add(
+								1,
+								'hour'
+							)
+						)}
 						max='23:59'
 						required
 					/>
