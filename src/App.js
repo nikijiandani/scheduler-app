@@ -96,7 +96,7 @@ function App() {
 }
 
 const Main = styled.main`
-	height: calc(100vh - 4rem);
+	height: calc(100vh - 8rem);
 	position: relative;
 	overflow: auto;
 `;

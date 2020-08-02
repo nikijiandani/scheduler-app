@@ -34,3 +34,23 @@ export const convertDateToHoursAndMinutes = (date) => {
 
 	return `${hours < 10 ? `0${hours}` : hours}:${mins < 10 ? `0${mins}` : mins}`;
 };
+
+export const convertMinutesToHoursAndMinutes = (duration) => {
+	return `${Math.floor(duration / 60)} ${duration === 1 ? 'hr' : 'hrs'} ${
+		duration % 60
+	} ${duration % 60 === 1 ? 'min' : 'mins'}`;
+};
+
+// Formats the first letter of every word in the string to uppercase except 'and' and '&'
+export function stringFormat(str) {
+	const arr = str.toLowerCase().split('-');
+	const result = arr
+		.map((item) => {
+			if (item !== 'and' && item !== '&') {
+				return item[0].toUpperCase() + item.slice(1, item.length);
+			}
+			return item;
+		})
+		.join(' ');
+	return result;
+}

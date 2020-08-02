@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { hours } from '../hours';
-import { getDay } from '../utils';
+import { getDay, stringFormat } from '../utils';
 
 const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
 	const [dayWidth, setDayWidth] = useState(100);
@@ -89,7 +89,7 @@ const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
 										${task.end_time.format('HH:mm')}`}
 								</p>
 								<hr />
-								<p>{task.type}</p>
+								<p>{stringFormat(task.type)}</p>
 							</TaskText>
 						</Task>
 					</Wrapper>
@@ -141,6 +141,7 @@ const Time = styled.time`
 	position: absolute;
 	top: 0;
 	left: 0;
+	padding-left: 1rem;
 `;
 
 const TaskText = styled.foreignObject`

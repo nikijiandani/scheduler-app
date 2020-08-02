@@ -1,6 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import { convertDateToHoursAndMinutes } from '../utils';
+import styled from 'styled-components';
+import {
+	convertDateToHoursAndMinutes,
+	convertMinutesToHoursAndMinutes,
+} from '../utils';
 
 const TaskFormContent = ({
 	driver,
@@ -63,8 +67,7 @@ const TaskFormContent = ({
 			</div>
 			<div>
 				Duration:
-				{`${Math.floor(duration / 60)} ${duration === 1 ? 'hr' : 'hrs'}`}
-				{`${duration % 60} ${duration % 60 === 1 ? 'min' : 'mins'}`}
+				{convertMinutesToHoursAndMinutes(duration)}
 			</div>
 			<div>
 				<label>
@@ -101,9 +104,18 @@ const TaskFormContent = ({
 					/>
 				</label>
 			</div>
-			<button type='submit'>Save</button>
+			<SaveButton type='submit'>Save</SaveButton>
 		</>
 	);
 };
+
+const SaveButton = styled.button`
+	background: #0000ff;
+	margin-top: 2rem;
+
+	:hover {
+		background: #003366;
+	}
+`;
 
 export default TaskFormContent;
