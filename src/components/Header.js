@@ -19,6 +19,7 @@ const Header = ({
 	selectedDriverTasks,
 	handleTaskSubmit,
 	handleOverwrite,
+	handleTaskDelete,
 }) => {
 	return (
 		<Container>
@@ -77,6 +78,7 @@ const Header = ({
 					handleOverwrite={handleOverwrite}
 					selectedTask={selectedTask}
 					setSelectedTask={setSelectedTask}
+					handleTaskDelete={handleTaskDelete}
 				/>
 			)}
 			<div>

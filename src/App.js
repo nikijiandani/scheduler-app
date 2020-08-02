@@ -63,6 +63,10 @@ function App() {
 		setShowTaskModal(false);
 	};
 
+	const handleTaskDelete = (task) => {
+		setTasks([...tasks.filter((t) => t.id !== task.id)]);
+	};
+
 	return (
 		<div className='App'>
 			<Header
@@ -77,6 +81,7 @@ function App() {
 				selectedDriverTasks={selectedDriverTasks}
 				handleTaskSubmit={handleTaskSubmit}
 				handleOverwrite={handleOverwrite}
+				handleTaskDelete={handleTaskDelete}
 			/>
 			<Main>
 				<Calendar

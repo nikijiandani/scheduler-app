@@ -4,8 +4,10 @@ import moment from 'moment';
 import { extendMoment } from 'moment-range';
 import { Icon } from '../styles';
 import Close from '../assets/close-24px.svg';
+import EditIcon from '../assets/edit-24px.svg';
+import DeleteIcon from '../assets/delete-24px.svg';
 import { drivers } from '../drivers';
-import { TaskFormContent } from './';
+import { TaskFormContent, TaskView } from './';
 import { convertDateToHoursAndMinutes } from '../utils';
 
 // Extend moment using the moment-range plugin
@@ -20,6 +22,7 @@ const Modal = ({
 	handleOverwrite,
 	selectedTask,
 	setSelectedTask,
+	handleTaskDelete,
 }) => {
 	const [date, setDate] = useState(
 		selectedTask ? new Date(selectedTask.start_time) : Date.now()
@@ -48,6 +51,7 @@ const Modal = ({
 		selectedTask ? selectedTask.location : ''
 	);
 	const [conflictedTasks, setConflictedTasks] = useState([]);
+	const [editing, setEditing] = useState(false);
 	const driver = drivers.find((driver) => driver.id === selectedDriver);
 
 	useEffect(() => {
@@ -95,7 +99,32 @@ const Modal = ({
 		<Overlay>
 			<Container>
 				<Header>
-					<h1>{selectedTask ? 'Editing Task' : 'Create a new task'}</h1>
+					<h1>
+						{selectedTask
+							? 'Task'
+							: editing
+							? 'Editing Task'
+							: 'Create a new task'}
+					</h1>
+					{selectedTask && !editing ? (
+						<>
+							<Icon
+								src={EditIcon}
+								alt='edit task'
+								tabIndex='0'
+								onClick={() => setEditing(true)}
+							/>
+							<Icon
+								src={DeleteIcon}
+								alt='delete task'
+								tabIndex='0'
+								onClick={() => {
+									closeModal();
+									handleTaskDelete(selectedTask);
+								}}
+							/>
+						</>
+					) : null}
 					<Icon
 						src={Close}
 						alt='close modal'
@@ -106,72 +135,85 @@ const Modal = ({
 						}}
 					/>
 				</Header>
-				<Form onSubmit={(e) => handleSubmit(e)}>
-					{conflictedTasks.length === 0 ? (
-						<TaskFormContent
-							driver={driver}
-							date={date}
-							setDate={setDate}
-							startTime={startTime}
-							setStartTime={setStartTime}
-							endTime={endTime}
-							setEndTime={setEndTime}
-							duration={duration}
-							taskType={taskType}
-							setTaskType={setTaskType}
-							description={description}
-							setDescription={setDescription}
-							location={location}
-							setLocation={setLocation}
-						/>
-					) : (
-						<>
-							<div>! Conflict</div>
-							<div>
-								New Task:
+				{selectedTask && !editing ? (
+					<TaskView
+						driver={driver}
+						date={date}
+						startTime={startTime}
+						endTime={endTime}
+						duration={duration}
+						taskType={taskType}
+						description={description}
+						location={location}
+					/>
+				) : (
+					<Form onSubmit={(e) => handleSubmit(e)}>
+						{conflictedTasks.length === 0 ? (
+							<TaskFormContent
+								driver={driver}
+								date={date}
+								setDate={setDate}
+								startTime={startTime}
+								setStartTime={setStartTime}
+								endTime={endTime}
+								setEndTime={setEndTime}
+								duration={duration}
+								taskType={taskType}
+								setTaskType={setTaskType}
+								description={description}
+								setDescription={setDescription}
+								location={location}
+								setLocation={setLocation}
+							/>
+						) : (
+							<>
+								<div>! Conflict</div>
 								<div>
-									{startTime} - {endTime}
+									New Task:
+									<div>
+										{startTime} - {endTime}
+									</div>
 								</div>
-							</div>
-							<div>
-								Existing Task/s:
-								<ul>
-									{conflictedTasks.map((task) => (
-										<li key={task.id}>
-											{task.type} - {task.start_time.format('HH:mm')} -{' '}
-											{task.end_time.format('HH:mm')}
-										</li>
-									))}
-								</ul>
-							</div>
-							<button
-								type='button'
-								onClick={() => {
-									const start = moment(
-										moment(date).format('YYYY-MM-DD') + ' ' + startTime
-									);
-									const end = moment(
-										moment(date).format('YYYY-MM-DD') + ' ' + endTime
-									);
+								<div>
+									Existing Task/s:
+									<ul>
+										{conflictedTasks.map((task) => (
+											<li key={task.id}>
+												{task.type} - {task.start_time.format('HH:mm')} -{' '}
+												{task.end_time.format('HH:mm')}
+											</li>
+										))}
+									</ul>
+								</div>
+								<button
+									type='button'
+									onClick={() => {
+										const start = moment(
+											moment(date).format('YYYY-MM-DD') + ' ' + startTime
+										);
+										const end = moment(
+											moment(date).format('YYYY-MM-DD') + ' ' + endTime
+										);
 
-									handleOverwrite(conflictedTasks, {
-										type: taskType,
-										description: description,
-										location: location,
-										driver_id: selectedDriver,
-										start_time: start,
-										end_time: end,
-									});
-								}}
-							>
-								Save & Overwrite
-							</button>
-							<button type='button' onClick={() => setConflictedTasks([])}>
-								Edit current task
-							</button>
-						</>
-					)}
-				</Form>
+										handleOverwrite(conflictedTasks, {
+											type: taskType,
+											description: description,
+											location: location,
+											driver_id: selectedDriver,
+											start_time: start,
+											end_time: end,
+										});
+									}}
+								>
+									Save & Overwrite
+								</button>
+								<button type='button' onClick={() => setConflictedTasks([])}>
+									Edit current task
+								</button>
+							</>
+						)}
+					</Form>
+				)}
 			</Container>
 		</Overlay>
 	);
