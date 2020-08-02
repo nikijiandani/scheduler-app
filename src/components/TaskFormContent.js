@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-const NewTaskFormContent = ({
+const TaskFormContent = ({
 	driver,
 	date,
 	setDate,
@@ -100,4 +100,4 @@ const NewTaskFormContent = ({
 	);
 };
 
-export default NewTaskFormContent;
+export default TaskFormContent;

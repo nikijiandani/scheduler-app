@@ -1,40 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { extendMoment } from 'moment-range';
 import { Icon } from '../styles';
 import Close from '../assets/close-24px.svg';
 import { drivers } from '../drivers';
-import { extendMoment } from 'moment-range';
-import { NewTaskFormContent } from './';
+import { TaskFormContent } from './';
+import { convertDateToHoursAndMinutes } from '../utils';
 
+// Extend moment using the moment-range plugin
 const momentPlus = extendMoment(moment);
 
+// Component
 const Modal = ({
 	selectedDriver,
 	tasks,
 	closeModal,
 	saveTask,
 	handleOverwrite,
+	selectedTask,
+	setSelectedTask,
 }) => {
 	const [date, setDate] = useState(Date.now());
 	const [startTime, setStartTime] = useState('00:00');
 	const [endTime, setEndTime] = useState('01:00');
 	const [duration, setDuration] = useState(
-		moment(endTime, 'HH:mm:ss').diff(moment(startTime, 'HH:mm:ss'), 'minutes')
+		moment(selectedTask ? selectedTask.end_time : endTime, 'HH:mm:ss').diff(
+			moment(selectedTask ? selectedTask.start_time : startTime, 'HH:mm:ss'),
+			'minutes'
+		)
 	);
 	const [taskType, setTaskType] = useState('PICK-UP');
 	const [description, setDescription] = useState('');
 	const [location, setLocation] = useState('');
-	const [driver, setDriver] = useState(
-		drivers.find((driver) => driver.id === selectedDriver)
-	);
 	const [conflictedTasks, setConflictedTasks] = useState([]);
+	const driver = drivers.find((driver) => driver.id === selectedDriver);
 
 	useEffect(() => {
 		setDuration(
-			moment(endTime, 'HH:mm:ss').diff(moment(startTime, 'HH:mm:ss'), 'minutes')
+			moment(selectedTask ? selectedTask.end_time : endTime, 'HH:mm:ss').diff(
+				moment(selectedTask ? selectedTask.start_time : startTime, 'HH:mm:ss'),
+				'minutes'
+			)
 		);
-	}, [startTime, endTime]);
+	}, [startTime, endTime, selectedTask]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -70,17 +79,45 @@ const Modal = ({
 		<Overlay>
 			<Container>
 				<Header>
-					<h1>Create a new task</h1>
+					<h1>{selectedTask ? 'Editing Task' : 'Create a new task'}</h1>
 					<Icon
 						src={Close}
 						alt='close modal'
 						tabIndex='0'
-						onClick={() => closeModal()}
+						onClick={() => {
+							closeModal();
+							setSelectedTask(null);
+						}}
 					/>
 				</Header>
 				<Form onSubmit={(e) => handleSubmit(e)}>
-					{conflictedTasks.length === 0 ? (
-						<NewTaskFormContent
+					{selectedTask ? (
+						<>
+							{console.log(selectedTask)}
+							<TaskFormContent
+								driver={driver}
+								date={new Date(selectedTask.start_time)}
+								setDate={setDate}
+								startTime={convertDateToHoursAndMinutes(
+									selectedTask.start_time
+								)}
+								setStartTime={setStartTime}
+								endTime={convertDateToHoursAndMinutes(selectedTask.end_time)}
+								setEndTime={setEndTime}
+								duration={moment(selectedTask.end_time, 'HH:mm:ss').diff(
+									moment(selectedTask.start_time, 'HH:mm:ss'),
+									'minutes'
+								)}
+								taskType={selectedTask.taskType}
+								setTaskType={setTaskType}
+								description={selectedTask.description}
+								setDescription={setDescription}
+								location={selectedTask.location}
+								setLocation={setLocation}
+							/>
+						</>
+					) : conflictedTasks.length === 0 ? (
+						<TaskFormContent
 							driver={driver}
 							date={date}
 							setDate={setDate}

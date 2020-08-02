@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import { extendMoment } from 'moment-range';
 import styled from 'styled-components';
 import ArrowLeft from './assets/keyboard_arrow_left-24px.svg';
 import ArrowRight from './assets/keyboard_arrow_right-24px.svg';
@@ -11,20 +12,38 @@ import './App.css';
 import { Icon } from './styles';
 import { v4 as uuidv4 } from 'uuid';
 
+// Extend moment using the moment-range plugin
+const momentPlus = extendMoment(moment);
+
 function App() {
-	const [currentWeek, setCurrentWeek] = useState(moment(Date.now()).week());
+	const [selectedWeek, setSelectedWeek] = useState(moment(Date.now()).week());
 	const [days, setDays] = useState([]);
 	const [selectedDriver, setSelectedDriver] = useState(drivers[0].id);
 	const [tasks, setTasks] = useState(taskData);
 	const [selectedDriverTasks, setSelectedDriverTasks] = useState(
 		taskData.filter((t) => t.driver_id === selectedDriver)
 	);
-	const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+	const [showTaskModal, setShowTaskModal] = useState(false);
+	const [selectedTask, setSelectedTask] = useState(null);
 
 	useEffect(() => {
-		setDays(generateWeek(currentWeek));
-		setSelectedDriverTasks(tasks.filter((t) => t.driver_id === selectedDriver));
-	}, [currentWeek, selectedDriver, tasks]);
+		setDays(generateWeek(selectedWeek));
+
+		const start = moment().day('Sunday').week(selectedWeek).startOf('day');
+		const end = moment().day('Saturday').week(selectedWeek).endOf('day');
+
+		//create a moment range for the selected week
+		const range = momentPlus.range(start, end);
+
+		// filter tasks by driver for selected week
+		setSelectedDriverTasks(
+			tasks.filter(
+				(t) =>
+					t.driver_id === selectedDriver &&
+					(range.contains(t.start_time) || range.contains(t.end_time))
+			)
+		);
+	}, [selectedWeek, selectedDriver, tasks]);
 
 	const handleTaskSubmit = (task) => {
 		task.id = uuidv4();
@@ -38,7 +57,7 @@ function App() {
 		);
 		newTask.id = uuidv4();
 		setTasks([...tasksWithNoConflicts, newTask]);
-		setShowNewTaskModal(false);
+		setShowTaskModal(false);
 	};
 
 	return (
@@ -64,39 +83,41 @@ function App() {
 						src={ArrowLeft}
 						alt='previous week'
 						onClick={() =>
-							setCurrentWeek(
+							setSelectedWeek(
 								moment(Date.now())
-									.week(currentWeek - 1)
+									.week(selectedWeek - 1)
 									.week()
 							)
 						}
 					/>
-					{`Week ${currentWeek}`}
+					{`Week ${selectedWeek}`}
 					<Icon
 						src={ArrowRight}
 						alt='next week'
 						onClick={() =>
-							setCurrentWeek(
+							setSelectedWeek(
 								moment(Date.now())
-									.week(currentWeek + 1)
+									.week(selectedWeek + 1)
 									.week()
 							)
 						}
 					/>
 				</WeekWrapper>
-				<Today onClick={() => setCurrentWeek(moment(Date.now()).week())}>
+				<Today onClick={() => setSelectedWeek(moment(Date.now()).week())}>
 					Today
 				</Today>
-				<NewTaskButton onClick={() => setShowNewTaskModal(true)}>
+				<NewTaskButton onClick={() => setShowTaskModal(true)}>
 					Add New Task
 				</NewTaskButton>
-				{showNewTaskModal && (
+				{showTaskModal && (
 					<Modal
 						selectedDriver={selectedDriver}
-						closeModal={() => setShowNewTaskModal(false)}
+						closeModal={() => setShowTaskModal(false)}
 						saveTask={handleTaskSubmit}
 						tasks={selectedDriverTasks}
 						handleOverwrite={handleOverwrite}
+						selectedTask={selectedTask}
+						setSelectedTask={setSelectedTask}
 					/>
 				)}
 				<div>
@@ -111,7 +132,12 @@ function App() {
 				</div>
 			</Header>
 			<Main>
-				<Calendar days={days} tasks={selectedDriverTasks} />
+				<Calendar
+					days={days}
+					tasks={selectedDriverTasks}
+					setShowTaskModal={setShowTaskModal}
+					setSelectedTask={setSelectedTask}
+				/>
 			</Main>
 		</div>
 	);
