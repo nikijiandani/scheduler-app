@@ -24,85 +24,79 @@ const TaskFormContent = ({
 }) => {
 	return (
 		<>
-			<div>Driver: {`${driver.first_name} ${driver.last_name}`}</div>
 			<div>
-				<label>
-					Date:
-					<input
-						type='date'
-						value={moment(date).format('YYYY-MM-DD')}
-						onChange={(e) => setDate(e.target.value)}
-					/>
-				</label>
+				<Label>Driver:</Label> {`${driver.first_name} ${driver.last_name}`}
+			</div>
+			<div>
+				<Label htmlFor='date'>Date:</Label>
+				<input
+					type='date'
+					id='date'
+					value={moment(date).format('YYYY-MM-DD')}
+					onChange={(e) => setDate(e.target.value)}
+				/>
 				<span>(Week {moment(date).week()})</span>
 			</div>
 			<div>
-				<label>
-					Start:
-					<input
-						type='time'
-						value={startTime}
-						onChange={(e) => setStartTime(e.target.value)}
-						required
-					/>
-				</label>
+				<Label htmlFor='start-time'>Start:</Label>
+				<input
+					type='time'
+					id='start-time'
+					value={startTime}
+					onChange={(e) => setStartTime(e.target.value)}
+					required
+				/>
 			</div>
 			<div>
-				<label>
-					End:
-					<input
-						type='time'
-						value={endTime}
-						onChange={(e) => setEndTime(e.target.value)}
-						min={convertDateToHoursAndMinutes(
-							moment(moment(date).format('YYYY-MM-DD') + ' ' + startTime).add(
-								1,
-								'hour'
-							)
-						)}
-						max='23:59'
-						required
-					/>
-				</label>
+				<Label htmlFor='end-time'>End:</Label>
+				<input
+					type='time'
+					id='end-time'
+					value={endTime}
+					onChange={(e) => setEndTime(e.target.value)}
+					min={convertDateToHoursAndMinutes(
+						moment(moment(date).format('YYYY-MM-DD') + ' ' + startTime).add(
+							1,
+							'hour'
+						)
+					)}
+					max='23:59'
+					required
+				/>
 			</div>
 			<div>
-				Duration:
+				<Label>Duration:</Label>
 				{convertMinutesToHoursAndMinutes(duration)}
 			</div>
 			<div>
-				<label>
-					Type of task:
-					<select
-						name='task types'
-						id='task-select'
-						value={taskType}
-						onChange={(e) => setTaskType(e.target.value)}
-					>
-						<option value='PICK-UP'>Pick up</option>
-						<option value='DROP-OFF'>Drop off</option>
-						<option value='OTHER'>Other</option>
-					</select>
-				</label>
+				<Label htmlFor='task-select'>Type of task:</Label>
+				<select
+					name='task types'
+					id='task-select'
+					value={taskType}
+					onChange={(e) => setTaskType(e.target.value)}
+				>
+					<option value='PICK-UP'>Pick up</option>
+					<option value='DROP-OFF'>Drop off</option>
+					<option value='OTHER'>Other</option>
+				</select>
 			</div>
 			<div>
-				<label>
-					Description:
-					<input
-						type='text'
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-					/>
-				</label>
+				<Label htmlFor='location'>Location:</Label>
+				<input
+					type='text'
+					id='location'
+					value={location}
+					onChange={(e) => setLocation(e.target.value)}
+				/>
 			</div>
 			<div>
-				<label>
-					Location:
-					<input
-						type='text'
-						value={location}
-						onChange={(e) => setLocation(e.target.value)}
-					/>
-				</label>
+				<Label htmlFor='description'>Description:</Label>
+				<textarea
+					value={description}
+					id='description'
+					onChange={(e) => setDescription(e.target.value)}
+				/>
 			</div>
 			<SaveButton type='submit'>Save</SaveButton>
 		</>
@@ -116,6 +110,11 @@ const SaveButton = styled.button`
 	:hover {
 		background: #003366;
 	}
+`;
+
+const Label = styled.label`
+	width: 8rem;
+	display: inline-block;
 `;
 
 export default TaskFormContent;

@@ -113,10 +113,10 @@ const Modal = ({
 			<Container>
 				<Header>
 					<h1>
-						{selectedTask
-							? 'Task'
-							: editing
+						{selectedTask && editing
 							? 'Editing Task'
+							: selectedTask
+							? 'Task'
 							: 'Create a new task'}
 					</h1>
 					<Icon
@@ -195,7 +195,7 @@ const Container = styled.div`
 	width: 50%;
 	height: fit-content;
 	position: absolute;
-	top: 20%;
+	top: 15%;
 	left: 25%;
 	padding: 1rem;
 	background: #ffffff;
@@ -226,6 +226,15 @@ const Form = styled.form`
 
 	div {
 		padding: 0.5rem 0;
+		text-align: left;
+		display: flex;
+		align-items: center;
+	}
+
+	input,
+	select {
+		height: 2rem;
+		padding: 0 1rem 0 0.5rem;
 	}
 `;
 

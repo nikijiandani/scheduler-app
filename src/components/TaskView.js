@@ -24,31 +24,33 @@ const TaskView = ({
 	return (
 		<Container>
 			<div>
-				<strong>Driver:</strong> {`${driver.first_name} ${driver.last_name}`}
+				<Strong>Driver:</Strong>{' '}
+				<span>{`${driver.first_name} ${driver.last_name}`}</span>
 			</div>
 			<div>
-				<strong> Date:</strong> {moment(date).format('YYYY-MM-DD')}
+				<Strong> Date:</Strong> <span>{moment(date).format('YYYY-MM-DD')}</span>
 			</div>
 			<div>
-				<strong>Start: </strong>
-				{startTime} hrs
+				<Strong>Start: </Strong>
+				<span>{startTime} hrs</span>
 			</div>
 			<div>
-				<strong>End: </strong>
-				{endTime} hrs
+				<Strong>End: </Strong>
+				<span>{endTime} hrs</span>
 			</div>
 			<div>
-				<strong>Duration:</strong> {convertMinutesToHoursAndMinutes(duration)}
+				<Strong>Duration:</Strong>
+				<span>{convertMinutesToHoursAndMinutes(duration)}</span>
 			</div>
 			<div>
-				<strong>Type of task:</strong> {stringFormat(taskType)}
+				<Strong>Type of task:</Strong> <span>{stringFormat(taskType)}</span>
 			</div>
 			<div>
-				<strong>Description:</strong> {description}
+				<Strong>Description:</Strong> <span>{description}</span>
 			</div>
 			<div>
-				<strong>Location: </strong>
-				{location}
+				<Strong>Location: </Strong>
+				<span>{location}</span>
 			</div>
 
 			<Wrapper>
@@ -78,6 +80,10 @@ const Container = styled.div`
 	button {
 		margin-right: 1rem;
 	}
+
+	div {
+		display: flex;
+	}
 `;
 
 const DeleteButton = styled.button`
@@ -86,6 +92,11 @@ const DeleteButton = styled.button`
 	:hover {
 		background: #a80000;
 	}
+`;
+
+const Strong = styled.strong`
+	width: 8rem;
+	display: inline-block;
 `;
 
 export default TaskView;

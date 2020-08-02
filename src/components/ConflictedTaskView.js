@@ -12,9 +12,9 @@ const ConflictedTaskView = ({
 }) => {
 	return (
 		<>
-			<div>
+			<Error>
 				<img src={ErrorIcon} alt='task conflicts exist' /> Conflict
-			</div>
+			</Error>
 			<div>
 				New Task:
 				<div>
@@ -49,6 +49,15 @@ const OverwriteButton = styled.button`
 
 	:hover {
 		background: #1a8922;
+	}
+`;
+
+const Error = styled.div`
+	display: flex;
+	align-items: center;
+
+	img {
+		margin-right: 0.5rem;
 	}
 `;
 
