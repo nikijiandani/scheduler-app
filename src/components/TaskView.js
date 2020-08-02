@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { convertMinutesToHoursAndMinutes, stringFormat } from '../utils';
 import EditIcon from '../assets/edit-24px.svg';
 import DeleteIcon from '../assets/delete-24px.svg';
+import { EditButton, Wrapper } from '../styles';
 
 const TaskView = ({
 	driver,
@@ -79,18 +80,6 @@ const Container = styled.div`
 	}
 `;
 
-const Wrapper = styled.div`
-	margin-top: 2rem;
-	display: flex;
-`;
-
-const EditButton = styled.button`
-	background: #0000ff;
-
-	:hover {
-		background: #003366;
-	}
-`;
 const DeleteButton = styled.button`
 	background: #fe3907;
 

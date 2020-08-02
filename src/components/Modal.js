@@ -5,7 +5,7 @@ import { extendMoment } from 'moment-range';
 import { Icon } from '../styles';
 import Close from '../assets/close-24px.svg';
 import { drivers } from '../drivers';
-import { TaskFormContent, TaskView } from './';
+import { TaskFormContent, TaskView, ConflictedTaskView } from './';
 import { convertDateToHoursAndMinutes } from '../utils';
 
 // Extend moment using the moment-range plugin
@@ -68,11 +68,12 @@ const Modal = ({
 		const range = momentPlus.range(start, end);
 
 		// check if task conflicts with existing tasks
-		let conflicts = tasks.filter(
-			(t) => range.contains(t.start_time) || range.contains(t.end_time)
-		);
+		let conflicts = tasks.filter((t) => {
+			const taskRange = momentPlus.range(t.start_time, t.end_time);
+			return range.overlaps(taskRange, { adjacent: true });
+		});
 
-		// if editing a task, filter out the task being edited to avoid conflicts
+		// if editing a task, filter out the task being edited
 		if (selectedTask) {
 			conflicts = conflicts.filter((t) => t.id !== selectedTask.id);
 		}
@@ -91,6 +92,20 @@ const Modal = ({
 			//handle task conflict
 			setConflictedTasks(conflicts);
 		}
+	};
+
+	const handleSaveAndOverwrite = () => {
+		const start = moment(moment(date).format('YYYY-MM-DD') + ' ' + startTime);
+		const end = moment(moment(date).format('YYYY-MM-DD') + ' ' + endTime);
+
+		handleOverwrite(conflictedTasks, {
+			type: taskType,
+			description: description,
+			location: location,
+			driver_id: selectedDriver,
+			start_time: start,
+			end_time: end,
+		});
 	};
 
 	return (
@@ -151,51 +166,13 @@ const Modal = ({
 								setLocation={setLocation}
 							/>
 						) : (
-							<>
-								<div>! Conflict</div>
-								<div>
-									New Task:
-									<div>
-										{startTime} - {endTime}
-									</div>
-								</div>
-								<div>
-									Existing Task/s:
-									<ul>
-										{conflictedTasks.map((task) => (
-											<li key={task.id}>
-												{task.type} - {task.start_time.format('HH:mm')} -{' '}
-												{task.end_time.format('HH:mm')}
-											</li>
-										))}
-									</ul>
-								</div>
-								<button
-									type='button'
-									onClick={() => {
-										const start = moment(
-											moment(date).format('YYYY-MM-DD') + ' ' + startTime
-										);
-										const end = moment(
-											moment(date).format('YYYY-MM-DD') + ' ' + endTime
-										);
-
-										handleOverwrite(conflictedTasks, {
-											type: taskType,
-											description: description,
-											location: location,
-											driver_id: selectedDriver,
-											start_time: start,
-											end_time: end,
-										});
-									}}
-								>
-									Save & Overwrite
-								</button>
-								<button type='button' onClick={() => setConflictedTasks([])}>
-									Edit current task
-								</button>
-							</>
+							<ConflictedTaskView
+								conflictedTasks={conflictedTasks}
+								setConflictedTasks={setConflictedTasks}
+								handleSaveAndOverwrite={handleSaveAndOverwrite}
+								startTime={startTime}
+								endTime={endTime}
+							/>
 						)}
 					</Form>
 				)}
@@ -225,6 +202,10 @@ const Container = styled.div`
 	border: 1px solid grey;
 	border-radius: 5px;
 	box-shadow: 1px 1px 1px #a0a0a0;
+
+	button {
+		margin-right: 1rem;
+	}
 `;
 
 const Header = styled.div`
@@ -239,7 +220,6 @@ const Header = styled.div`
 `;
 
 const Form = styled.form`
-	/* border: 1px solid #000; */
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;

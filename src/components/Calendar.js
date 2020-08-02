@@ -121,6 +121,7 @@ const Day = styled.th`
 	top: 0;
 	background: ${({ today }) => (today ? '#e9f8ff' : '#ffffff')};
 	z-index: 1;
+	box-shadow: 0 1px 0 0 grey;
 
 	div {
 		margin: 0.5rem;
@@ -135,6 +136,10 @@ const Row = styled.tr`
 	border: 1px solid grey;
 	height: 3.75rem;
 	width: 100%;
+
+	:first-child {
+		border: none;
+	}
 `;
 
 const Time = styled.time`
