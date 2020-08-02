@@ -70,7 +70,7 @@ const Modal = ({
 		// check if task conflicts with existing tasks
 		let conflicts = tasks.filter((t) => {
 			const taskRange = momentPlus.range(t.start_time, t.end_time);
-			return range.overlaps(taskRange, { adjacent: true });
+			return range.overlaps(taskRange, { adjacent: false });
 		});
 
 		// if editing a task, filter out the task being edited

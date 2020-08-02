@@ -64,12 +64,45 @@ const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
 							setSelectedTask(task);
 							setShowTaskModal(true);
 						}}
+						taskType={task.type}
 					>
 						<Task
 							xmlns='http://www.w3.org/2000/svg'
-							width={dayWidth}
+							width={dayWidth - 4}
 							height={height}
 						>
+							<defs>
+								<linearGradient id='grad1' x1='0%' y1='0%' x2='0%' y2='100%'>
+									<stop
+										offset='21%'
+										style={{ stopColor: 'rgba(0,71,11,1)', stopOpacity: 1 }}
+									/>
+									<stop
+										offset='100%'
+										style={{ stopColor: 'rgba(0,180,28,1)', stopOpacity: 1 }}
+									/>
+								</linearGradient>
+								<linearGradient id='grad2' x1='0%' y1='0%' x2='0%' y2='100%'>
+									<stop
+										offset='21%'
+										style={{ stopColor: 'rgba(55,55,55,1)', stopOpacity: 1 }}
+									/>
+									<stop
+										offset='100%'
+										style={{ stopColor: 'rgba(153,153,153,1)', stopOpacity: 1 }}
+									/>
+								</linearGradient>
+								<linearGradient id='grad3' x1='0%' y1='0%' x2='0%' y2='100%'>
+									<stop
+										offset='21%'
+										style={{ stopColor: 'rgba(113,1,131,1)', stopOpacity: 1 }}
+									/>
+									<stop
+										offset='100%'
+										style={{ stopColor: 'rgba(167,0,194,1)', stopOpacity: 1 }}
+									/>
+								</linearGradient>
+							</defs>
 							<rect
 								x='0'
 								width={dayWidth}
@@ -77,10 +110,10 @@ const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
 								rx='4'
 								fill={
 									task.type === 'PICK-UP'
-										? '#00470B'
+										? 'url(#grad1)'
 										: task.type === 'DROP-OFF'
-										? '#373737'
-										: '#710183'
+										? 'url(#grad2)'
+										: 'url(#grad3)'
 								}
 							></rect>
 							<TaskText width='100%' height='100%' fill='#fff'>
@@ -178,7 +211,12 @@ const Wrapper = styled.div`
 	:hover {
 		svg {
 			rect {
-				fill: grey;
+				fill: ${({ taskType }) =>
+					taskType === 'PICK-UP'
+						? '#00470b'
+						: taskType === 'DROP-OFF'
+						? '#373737'
+						: '#710183'};
 			}
 		}
 	}
