@@ -120,6 +120,7 @@ const Modal = ({
 								tabIndex='0'
 								onClick={() => {
 									closeModal();
+									setSelectedTask(null);
 									handleTaskDelete(selectedTask);
 								}}
 							/>
