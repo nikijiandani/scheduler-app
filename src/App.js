@@ -17,9 +17,7 @@ function App() {
 	const [days, setDays] = useState([]);
 	const [selectedDriver, setSelectedDriver] = useState(drivers[0].id);
 	const [tasks, setTasks] = useState(taskData);
-	const [selectedDriverTasks, setSelectedDriverTasks] = useState(
-		taskData.filter((t) => t.driver_id === selectedDriver)
-	);
+	const [selectedDriverTasks, setSelectedDriverTasks] = useState([]);
 	const [showTaskModal, setShowTaskModal] = useState(false);
 	const [selectedTask, setSelectedTask] = useState(null);
 
@@ -37,7 +35,8 @@ function App() {
 			tasks.filter(
 				(t) =>
 					t.driver_id === selectedDriver &&
-					(range.contains(t.start_time) || range.contains(t.end_time))
+					range.contains(t.start_time) &&
+					range.contains(t.end_time)
 			)
 		);
 	}, [selectedWeek, selectedDriver, tasks]);

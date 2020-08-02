@@ -8,8 +8,8 @@ export const taskData = [
 		description: 'Picking up a shipment',
 		location: 'Pleasant Park',
 		driver_id: 1,
-		start_time: moment(),
-		end_time: moment().add(1, 'hour'),
+		start_time: moment(new Date('2020-8-01')),
+		end_time: moment(new Date('2020-8-01')).add(1, 'hour'),
 	},
 	{
 		id: uuidv4(),
@@ -17,8 +17,8 @@ export const taskData = [
 		description: 'Dropping off some items',
 		location: 'Catty Corner',
 		driver_id: 2,
-		start_time: moment(),
-		end_time: moment().add(3, 'hours'),
+		start_time: moment(new Date('2020-8-02')),
+		end_time: moment(new Date('2020-8-02')).add(3, 'hours'),
 	},
 	{
 		id: uuidv4(),
@@ -26,8 +26,8 @@ export const taskData = [
 		description: 'Coffee break',
 		location: 'The Authority',
 		driver_id: 3,
-		start_time: moment().subtract(1, 'hour'),
-		end_time: moment().add(4, 'hours'),
+		start_time: moment(new Date('2020-8-02')).add(6, 'hours'),
+		end_time: moment(new Date('2020-8-02')).add(8, 'hours'),
 	},
 	{
 		id: uuidv4(),
@@ -35,7 +35,7 @@ export const taskData = [
 		description: 'Picking up some boxes',
 		location: 'Sweaty Sands',
 		driver_id: 1,
-		start_time: moment().add(2, 'hours'),
-		end_time: moment().add(4, 'hours'),
+		start_time: moment(new Date('2020-8-02')).add(6, 'hours'),
+		end_time: moment(new Date('2020-8-02')).add(10, 'hours'),
 	},
 ];
