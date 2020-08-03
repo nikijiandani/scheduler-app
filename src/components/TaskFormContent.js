@@ -5,6 +5,7 @@ import {
 	convertDateToHoursAndMinutes,
 	convertMinutesToHoursAndMinutes,
 } from '../utils';
+import { Wrapper } from '../styles';
 
 const TaskFormContent = ({
 	driver,
@@ -81,7 +82,7 @@ const TaskFormContent = ({
 					<option value='OTHER'>Other</option>
 				</select>
 			</div>
-			<div>
+			<LabelWrapper>
 				<Label htmlFor='location'>Location:</Label>
 				<input
 					type='text'
@@ -89,15 +90,15 @@ const TaskFormContent = ({
 					value={location}
 					onChange={(e) => setLocation(e.target.value)}
 				/>
-			</div>
-			<div>
+			</LabelWrapper>
+			<LabelWrapper>
 				<Label htmlFor='description'>Description:</Label>
 				<textarea
 					value={description}
 					id='description'
 					onChange={(e) => setDescription(e.target.value)}
 				/>
-			</div>
+			</LabelWrapper>
 			<SaveButton type='submit'>Save</SaveButton>
 		</>
 	);
@@ -115,6 +116,10 @@ const SaveButton = styled.button`
 const Label = styled.label`
 	width: 8rem;
 	display: inline-block;
+`;
+
+const LabelWrapper = styled(Wrapper)`
+	margin: 0;
 `;
 
 export default TaskFormContent;

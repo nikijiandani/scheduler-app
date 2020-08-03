@@ -6,6 +6,7 @@ import ErrorIcon from '../assets/error-24px.svg';
 const ConflictedTaskView = ({
 	conflictedTasks,
 	setConflictedTasks,
+	type,
 	startTime,
 	endTime,
 	handleSaveAndOverwrite,
@@ -17,9 +18,11 @@ const ConflictedTaskView = ({
 			</Error>
 			<div>
 				New Task:
-				<div>
-					{startTime} - {endTime}
-				</div>
+				<ul>
+					<li>
+						{type} - {startTime} - {endTime}
+					</li>
+				</ul>
 			</div>
 			<div>
 				Existing Task/s:

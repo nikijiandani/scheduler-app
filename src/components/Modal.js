@@ -191,6 +191,7 @@ const Modal = ({
 								handleSaveAndOverwrite={handleSaveAndOverwrite}
 								startTime={startTime}
 								endTime={endTime}
+								type={taskType}
 							/>
 						)}
 					</Form>
@@ -246,8 +247,6 @@ const Form = styled.form`
 	div {
 		padding: 0.5rem 0;
 		text-align: left;
-		display: flex;
-		align-items: center;
 	}
 
 	input,

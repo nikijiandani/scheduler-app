@@ -10,7 +10,7 @@ const DownloadScheduleForm = ({ handleDownload }) => {
 
 	return (
 		<Container onSubmit={(e) => handleDownload(e, selectedOption)}>
-			<p>Select a division of time:</p>
+			<p>Select a time range:</p>
 
 			<div>
 				<input
