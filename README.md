@@ -34,10 +34,10 @@ This project was created as a solution to the Summer 2020 Rose Rocket code chall
 
 ## Getting started
 
-1. Clone the repository over HTTPS or SSH. More info on cloning repositories [here](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+1. Open the terminal/command line interface and clone the repository over HTTPS or SSH. Change the current working directory to the location where you want the cloned directory. Then type the following command. More info on cloning repositories [here](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
 ```
-https://github.com/nikijiandani/scheduler-app.git
+git clone https://github.com/nikijiandani/scheduler-app.git
 ```
 
 2. Navigate to the project directory
