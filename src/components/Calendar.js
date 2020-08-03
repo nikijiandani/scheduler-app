@@ -1,16 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { hours } from '../hours';
 import { getDay, stringFormat } from '../utils';
+import { useWindowSize } from '../hooks';
 
 const Calendar = ({ days, tasks, setShowModal, setSelectedTask }) => {
 	const [dayWidth, setDayWidth] = useState(100);
-	const ref = useRef();
+
+	const viewportSize = useWindowSize();
 
 	useEffect(() => {
-		setDayWidth(ref.current.offsetWidth / 8);
-	}, []);
+		setDayWidth(viewportSize.width / 8);
+	}, [viewportSize.width]);
 
 	return (
 		<>
@@ -22,7 +24,7 @@ const Calendar = ({ days, tasks, setShowModal, setSelectedTask }) => {
 					))}
 				</colgroup>
 				<Header>
-					<Row ref={ref}>
+					<Row>
 						<Day />
 						{days.map((day, i) => (
 							<Day key={i} today={day.isSame(moment(), 'day')}>
