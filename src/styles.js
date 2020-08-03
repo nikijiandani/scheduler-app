@@ -20,4 +20,10 @@ export const EditButton = styled.button`
 export const Wrapper = styled.div`
 	margin-top: 2rem;
 	display: flex;
+	text-align: left;
+`;
+
+export const Strong = styled.strong`
+	width: 8rem;
+	display: inline-block;
 `;

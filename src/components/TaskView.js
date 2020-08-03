@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { convertMinutesToHoursAndMinutes, stringFormat } from '../utils';
 import EditIcon from '../assets/edit-24px.svg';
 import DeleteIcon from '../assets/delete-24px.svg';
-import { EditButton, Wrapper } from '../styles';
+import { EditButton, Wrapper, Strong } from '../styles';
 
 const TaskView = ({
 	driver,
@@ -24,7 +24,7 @@ const TaskView = ({
 	return (
 		<Container>
 			<div>
-				<Strong>Driver:</Strong>{' '}
+				<Strong>Driver:</Strong>
 				<span>{`${driver.first_name} ${driver.last_name}`}</span>
 			</div>
 			<div>
@@ -92,11 +92,6 @@ const DeleteButton = styled.button`
 	:hover {
 		background: #a80000;
 	}
-`;
-
-const Strong = styled.strong`
-	width: 8rem;
-	display: inline-block;
 `;
 
 export default TaskView;

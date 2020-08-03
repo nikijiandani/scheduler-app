@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import { Icon } from '../styles';
+import { Icon, Strong, Wrapper } from '../styles';
 import Close from '../assets/close-24px.svg';
 import { drivers } from '../drivers';
-import { TaskFormContent, TaskView, ConflictedTaskView } from './';
+import {
+	TaskFormContent,
+	TaskView,
+	ConflictedTaskView,
+	DownloadScheduleForm,
+} from './';
 import { convertDateToHoursAndMinutes } from '../utils';
 
 // Extend moment using the moment-range plugin
@@ -21,6 +26,9 @@ const Modal = ({
 	selectedTask,
 	setSelectedTask,
 	handleTaskDelete,
+	downloadView,
+	setDownloadView,
+	handleDownload,
 }) => {
 	const [date, setDate] = useState(
 		selectedTask ? new Date(selectedTask.start_time) : Date.now()
@@ -113,7 +121,9 @@ const Modal = ({
 			<Container>
 				<Header>
 					<h1>
-						{selectedTask && editing
+						{downloadView
+							? 'Download Schedule'
+							: selectedTask && editing
 							? 'Editing Task'
 							: selectedTask
 							? 'Task'
@@ -126,11 +136,20 @@ const Modal = ({
 						onClick={() => {
 							closeModal();
 							setSelectedTask(null);
+							setDownloadView(false);
 						}}
 					/>
 				</Header>
 				<hr />
-				{selectedTask && !editing ? (
+				{downloadView ? (
+					<>
+						<Wrapper>
+							<Strong>Driver:</Strong>
+							<span>{`${driver.first_name} ${driver.last_name}`}</span>
+						</Wrapper>
+						<DownloadScheduleForm handleDownload={handleDownload} />
+					</>
+				) : selectedTask && !editing ? (
 					<TaskView
 						driver={driver}
 						date={date}

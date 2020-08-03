@@ -4,7 +4,7 @@ import moment from 'moment';
 import { hours } from '../hours';
 import { getDay, stringFormat } from '../utils';
 
-const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
+const Calendar = ({ days, tasks, setShowModal, setSelectedTask }) => {
 	const [dayWidth, setDayWidth] = useState(100);
 	const ref = useRef();
 
@@ -62,7 +62,7 @@ const Calendar = ({ days, tasks, setShowTaskModal, setSelectedTask }) => {
 						tabIndex='0'
 						onClick={() => {
 							setSelectedTask(task);
-							setShowTaskModal(true);
+							setShowModal(true);
 						}}
 						taskType={task.type}
 					>

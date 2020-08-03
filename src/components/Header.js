@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import ArrowLeft from '../assets/keyboard_arrow_left-24px.svg';
@@ -14,13 +14,16 @@ const Header = ({
 	setSelectedWeek,
 	selectedTask,
 	setSelectedTask,
-	showTaskModal,
-	setShowTaskModal,
+	showModal,
+	setShowModal,
 	selectedDriverTasks,
 	handleTaskSubmit,
 	handleOverwrite,
 	handleTaskDelete,
+	handleDownload,
 }) => {
+	const [downloadView, setDownloadView] = useState(false);
+
 	return (
 		<Container>
 			<Wrapper>
@@ -39,16 +42,14 @@ const Header = ({
 						))}
 					</select>
 				</label>
-				<label htmlFor='day-interval-select'>
-					Download schedule
-					<select name='day intervals' id='day-interval-select'>
-						<option value='2'>2 days</option>
-						<option value='4'>4 days</option>
-						<option value='7'>7 days</option>
-						<option value='14'>14 days</option>
-						<option value='28'>28 days</option>
-					</select>
-				</label>
+				<DownloadButton
+					onClick={() => {
+						setDownloadView(true);
+						setShowModal(true);
+					}}
+				>
+					Download Schedule
+				</DownloadButton>
 			</Wrapper>
 			<Wrapper>
 				<WeekContainer>
@@ -80,19 +81,22 @@ const Header = ({
 					Today
 				</Today>
 			</Wrapper>
-			<NewTaskButton onClick={() => setShowTaskModal(true)}>
+			<NewTaskButton onClick={() => setShowModal(true)}>
 				Add New Task
 			</NewTaskButton>
-			{showTaskModal && (
+			{showModal && (
 				<Modal
 					selectedDriver={selectedDriver}
-					closeModal={() => setShowTaskModal(false)}
+					closeModal={() => setShowModal(false)}
 					saveTask={handleTaskSubmit}
 					tasks={selectedDriverTasks}
 					handleOverwrite={handleOverwrite}
 					selectedTask={selectedTask}
 					setSelectedTask={setSelectedTask}
 					handleTaskDelete={handleTaskDelete}
+					downloadView={downloadView}
+					setDownloadView={setDownloadView}
+					handleDownload={handleDownload}
 				/>
 			)}
 		</Container>
@@ -123,6 +127,15 @@ const Container = styled.header`
 			margin-right: 0.5rem;
 			width: 1.25rem;
 		}
+	}
+
+	select {
+		height: 2rem;
+		padding: 0 1rem 0 0.5rem;
+	}
+
+	label {
+		margin-bottom: 0.5rem;
 	}
 `;
 
@@ -160,6 +173,14 @@ const NewTaskButton = styled.button`
 
 	:hover {
 		background: #003366;
+`;
+
+const DownloadButton = styled.button`
+	background: #ad234b;
+
+	:hover {
+		background: #99173c;
+	}
 `;
 
 export default Header;

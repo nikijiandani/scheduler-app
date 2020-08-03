@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { drivers } from './drivers';
 import { taskData } from './task-data';
 import { Calendar, Header } from './components';
-import { generateWeek } from './utils';
+import { generateWeek, generateCSVContent } from './utils';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -18,7 +18,7 @@ function App() {
 	const [selectedDriver, setSelectedDriver] = useState(drivers[0].id);
 	const [tasks, setTasks] = useState(taskData);
 	const [selectedDriverTasks, setSelectedDriverTasks] = useState([]);
-	const [showTaskModal, setShowTaskModal] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const [selectedTask, setSelectedTask] = useState(null);
 
 	useEffect(() => {
@@ -60,11 +60,20 @@ function App() {
 		);
 		newTask.id = uuidv4();
 		setTasks([...tasksWithNoConflicts, newTask]);
-		setShowTaskModal(false);
+		setShowModal(false);
 	};
 
 	const handleTaskDelete = (task) => {
 		setTasks([...tasks.filter((t) => t.id !== task.id)]);
+	};
+
+	const handleDownload = (e, selectedDivision) => {
+		e.preventDefault();
+
+		const encodedUri = encodeURI(
+			generateCSVContent(selectedDivision, tasks, selectedDriver)
+		);
+		window.open(encodedUri);
 	};
 
 	return (
@@ -76,18 +85,19 @@ function App() {
 				setSelectedWeek={setSelectedWeek}
 				selectedTask={selectedTask}
 				setSelectedTask={setSelectedTask}
-				showTaskModal={showTaskModal}
-				setShowTaskModal={setShowTaskModal}
+				showModal={showModal}
+				setShowModal={setShowModal}
 				selectedDriverTasks={selectedDriverTasks}
 				handleTaskSubmit={handleTaskSubmit}
 				handleOverwrite={handleOverwrite}
 				handleTaskDelete={handleTaskDelete}
+				handleDownload={handleDownload}
 			/>
 			<Main>
 				<Calendar
 					days={days}
 					tasks={selectedDriverTasks}
-					setShowTaskModal={setShowTaskModal}
+					setShowModal={setShowModal}
 					setSelectedTask={setSelectedTask}
 				/>
 			</Main>
